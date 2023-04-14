@@ -24,6 +24,6 @@ app.use((req, res, next) => {
   res.status(404).send("<h1>Page not found!</h1>");
 });
 
-app.listen(4000, () => {
-  console.log("Server is running on port: ", 4000);
+app.listen(5003, () => {
+  console.log("Server is running on port: ", 5003);
 });

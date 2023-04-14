@@ -15,4 +15,6 @@ app.get("/users", (req, res) => {
   res.sendFile(path.join(__dirname, "pages", "users.html"));
 });
 
-app.listen(4000);
+app.listen(5004, () => {
+  console.log("Server is running on port: ", 5004);
+});
