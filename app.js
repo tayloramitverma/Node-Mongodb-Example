@@ -17,7 +17,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use("/web-api/admin", adminRoutes);
 app.use("/web-api/shop", shopRoutes);
 
