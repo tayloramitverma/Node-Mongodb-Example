@@ -1,29 +1,37 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
+const path = require('path');
+
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const errorController = require('./controllers/error');
+const mongoConnect = require('./util/database').mongoConnect;
+const User = require('./models/user');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  console.log("Middleware test one");
-  next();
+  User.findById('643d0d5208126e496a08a57c')
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(err => console.log(err));
 });
 
-app.use((req, res, next) => {
-  console.log("Middleware test two");
-  next();
-});
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
 
-app.use("/web-api/admin", adminRoutes);
-app.use("/web-api/shop", shopRoutes);
+app.use(errorController.get404);
 
-app.use((req, res, next) => {
-  res.status(404).send("<h1>Page not found!</h1>");
-});
-
-app.listen(5003, () => {
-  console.log("Server is running on port: ", 5003);
+mongoConnect(() => {
+  app.listen(5003);
 });
